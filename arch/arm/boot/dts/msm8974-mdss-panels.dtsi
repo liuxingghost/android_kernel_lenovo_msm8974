@@ -10,6 +10,10 @@
  * GNU General Public License for more details.
  */
 
+/include/ "dsi-panel-r63319-WQHD-dual-mipi0-video.dtsi"
+/include/ "dsi-panel-r63319-WQHD-dual-mipi1-video.dtsi"
+/include/ "dsi-panel-nt35598-WQHD-dual-mipi0-video.dtsi"
+/include/ "dsi-panel-nt35598-WQHD-dual-mipi1-video.dtsi"
 /include/ "dsi-panel-orise-720p-video.dtsi"
 /include/ "dsi-panel-toshiba-720p-video.dtsi"
 /include/ "dsi-panel-sharp-qhd-video.dtsi"
