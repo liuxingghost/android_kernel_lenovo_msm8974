@@ -164,6 +164,19 @@
 				regulator-max-microamp = <9360>;
 			};
 		};
+		bq27530@55 {
+			reg = <0x55>;
+			compatible = "ti,bq27530-battery";
+			interrupt-parent = <&msmgpio>;
+			vcc_i2c-supply = <&pm8941_s3>;
+			bq27530,chg-int-gpio = <&msmgpio 144 0x00>;
+			bq27530,fg-int-gpio = <&msmgpio 86 0x00>;
+			bq27530,usb-sw-gpio = <&msmgpio 78 0x00>;
+			bq27530,chg-en-gpio = <&pm8941_gpios 10 0x00>;
+			bq27530,chg-otg-gpio = <&pm8941_gpios 11 0x00>;
+			bq27530,chg-psel-gpio = <&pm8941_gpios 12 0x00>;
+			bq27530,usb-sw-en-gpio = <&pm8941_gpios 14 0x00>;
+		};
 	};
 
 	gpio_keys {
@@ -493,37 +506,49 @@
 	};
 
 	gpio@c900 { /* GPIO 10 */
+	 /*BQ27530_EN*/
 		qcom,mode = <1>;          /* QPNP_PIN_MODE_DIG_OUT */
+		qcom,output-type = <0>;   /* CMOS */
+		qcom,pull = <5>;          /* PULL_NO */
 		qcom,out-strength = <1>;  /* QPNP_PIN_OUT_STRENGTH_LOW */
-		qcom,src-sel = <2>;       /* QPNP_PIN_SEL_FUNC_1  */
+		qcom,src-sel = <0>;       /* QPNP_PIN_SEL_FUNC_CONSTANT  */
 		qcom,master-en = <1>;
 	};
 
 	gpio@ca00 { /* GPIO 11 */
 		qcom,mode = <1>;          /* QPNP_PIN_MODE_DIG_OUT */
 		qcom,out-strength = <1>;  /* QPNP_PIN_OUT_STRENGTH_LOW */
-		qcom,src-sel = <2>;       /* QPNP_PIN_SEL_FUNC_1  */
+		qcom,src-sel = <0>;       /* QPNP_PIN_SEL_FUNC_  */
 		qcom,master-en = <1>;
 	};
 
 	gpio@cb00 { /* GPIO 12 */
 		qcom,mode = <1>;          /* QPNP_PIN_MODE_DIG_OUT */
+		qcom,output-type = <0>;   /* CMOS */
+		qcom,src-sel = <0>;       /* QPNP_PIN_SEL_FUN_CONSTANT  */
+		qcom,vin-sel = <0>;       /* QPNP_PIN_VIN2  */
+		qcom,pull = <5>;          /* PULL_NO */
 		qcom,out-strength = <1>;  /* QPNP_PIN_OUT_STRENGTH_LOW */
-		qcom,src-sel = <2>;       /* QPNP_PIN_SEL_FUNC_1  */
 		qcom,master-en = <1>;
 	};
 
 	gpio@cc00 { /* GPIO 13 */
 		qcom,mode = <1>;          /* QPNP_PIN_MODE_DIG_OUT */
+		qcom,output-type = <0>;
+		qcom,pull = <5>;
+		qcom,vin-sel = <3>;
 		qcom,out-strength = <1>;  /* QPNP_PIN_OUT_STRENGTH_LOW */
-		qcom,src-sel = <2>;       /* QPNP_PIN_SEL_FUNC_1  */
+		qcom,src-sel = <0>;       /* function: output 1 */
 		qcom,master-en = <1>;
 	};
 
 	gpio@cd00 { /* GPIO 14 */
 		qcom,mode = <1>;          /* QPNP_PIN_MODE_DIG_OUT */
+		qcom,output-type = <0>;   /* CMOS */
 		qcom,out-strength = <1>;  /* QPNP_PIN_OUT_STRENGTH_LOW */
 		qcom,src-sel = <2>;       /* QPNP_PIN_SEL_FUNC_1  */
+		qcom,src-sel = <0>;       /* QPNP_PIN_SEL_FUN_CONSTANT  */
+		qcom,vin-sel = <0>;       /* QPNP_PIN_VIN2  */
 		qcom,master-en = <1>;
 	};
 
@@ -651,9 +676,12 @@
 	};
 
 	gpio@e200 { /* GPIO 35 */
+		qcom,src-sel = <0>;     /* XO_OUT_A2_EN */
 		qcom,mode = <0>;        /* QPNP_PIN_MODE_DIG_IN */
-		qcom,pull = <4>;	/* QPNP_PIN_PULL_DN */
-		qcom,master-en = <1>;
+		qcom,pull = <5>;        /* QPNP_PIN_PULL_DN --Leon: NP -- */
+		qcom,vin-sel = <2>;     /* add pm8941 S3 = 1.8v */		
+		qcom,master-en = <1>;   /* Enable */
+		status = "ok";
 	};
 
 	gpio@e300 { /* GPIO 36 */
