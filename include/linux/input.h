@@ -432,8 +432,10 @@ struct input_keymap_entry {
 #define KEY_SEARCH		217
 #define KEY_CONNECT		218
 #define KEY_FINANCE		219	/* AL Checkbook/Finance */
-#define KEY_SPORT		220
-#define KEY_SHOP		221
+#define KEY_SPORT		250
+#define KEY_SHOP		251
+#define KEY_SPORT_B		252
+#define KEY_SHOP_B		253
 #define KEY_ALTERASE		222
 #define KEY_CANCEL		223	/* AC Cancel */
 #define KEY_BRIGHTNESSDOWN	224
@@ -706,6 +708,14 @@ struct input_keymap_entry {
 #define KEY_CAMERA_DOWN		0x218
 #define KEY_CAMERA_LEFT		0x219
 #define KEY_CAMERA_RIGHT	0x21a
+#define KEY_GESTURE_C		0x21b
+#define KEY_GESTURE_LR		0x21c
+#define KEY_GESTURE_RL		0x21d
+#define KEY_GESTURE_DT		0x21e
+#define KEY_GESTURE_V		0x21f
+#define KEY_GESTURE_E		0x220
+#define KEY_GESTURE_M		0x221
+#define KEY_GESTURE_W		0x222
 
 #define BTN_TRIGGER_HAPPY		0x2c0
 #define BTN_TRIGGER_HAPPY1		0x2c0
