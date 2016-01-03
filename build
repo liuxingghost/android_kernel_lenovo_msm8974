@@ -1,0 +1,164 @@
+#!/bin/bash
+#
+# My custom bash script for building kernel and modules :)
+#
+# Michal Chvíla <electrydev@gmail.com>
+# Electry@xda
+# github.com/ElectryDev
+
+#
+# Kernel configuration
+#
+THREADS=4
+DEFCONFIG=cyanogenmod_kingdom_row_defconfig
+HOSTNAME="slave"
+KERNELVER="-debug"
+
+
+#
+# Path variables
+#
+TOOLS_PATH=~/android/bin
+
+# For GCC 4.9+ use androideabi instead of classic eabi/gnueabi
+TOOLCHAIN_PREFIX=arm-eabi-
+TOOLCHAIN_PATH=~/android/toolchains/arm-cortex_a15-linux-gnueabihf-linaro-4.8.4
+
+ARMBOOT_PATH=arch/arm/boot
+BOOTFILES_PATH=boot
+DTCSCRIPTS_PATH=scripts/dtc
+OUTPUT_PATH=out
+
+TMP_PATH=../tmp
+
+#
+# Colored output
+#
+COLOR="\e[44m\e[97m"
+DEFCOLOR="\e[49m\e[39m"
+ACTCOLOR="\e[45m\e[97m"
+ERRCOLOR="\e[41m\e[97m"
+
+#
+# Functions
+#
+function MakeClean() {
+	echo -e $COLOR">> make clean"$DEFCOLOR
+	make clean
+}
+
+function KingdomRowConfig() {
+	echo -e $COLOR">> Writing .config according to "$DEFCONFIG$DEFCOLOR
+	make $DEFCONFIG
+}
+
+function MakeKernel() {
+	echo -e $COLOR">> Building kernel... Please wait, this may take a while..."$DEFCOLOR
+	DATE_START=$(date +"%s")
+
+	if [[ $(make -j$THREADS | tail -n 10) == *failed* ]]; then
+		SUCCESS=false
+	else
+		SUCCESS=true
+	fi
+
+	DATE_END=$(date +"%s")
+	DIFF=$(($DATE_END - $DATE_START))
+
+	if [ $SUCCESS = false ]; then
+		echo -e $ERRCOLOR">> Build FAILED in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."$DEFCOLOR
+		exit
+	else
+		echo -e $COLOR">> Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."$DEFCOLOR
+	fi
+	
+}
+
+function MakeKernelDebug() {
+	echo -e $COLOR">> Building kernel..."$DEFCOLOR
+	DATE_START=$(date +"%s")
+
+	make -j$THREADS
+
+	DATE_END=$(date +"%s")
+	DIFF=$(($DATE_END - $DATE_START))
+
+	echo -e $COLOR">> Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."$DEFCOLOR
+	echo -e $ACTCOLOR">> Please check if there was an error!"$DEFCOLOR
+}
+
+function CleanOld() {
+	echo -e $COLOR">> Cleaning old files"$DEFCOLOR
+	rm -r $OUTPUT_PATH/ &> /dev/null
+	mkdir $OUTPUT_PATH/ &> /dev/null
+	mkdir $OUTPUT_PATH/modules &> /dev/null
+	rm $BOOTFILES_PATH/dt.img &> /dev/null
+	rm $BOOTFILES_PATH/kernel &> /dev/null
+	rm $ARMBOOT_PATH/zImage &> /dev/null
+}
+
+function MakeBoot() {
+	echo -e $COLOR">> Copying zImage > kernel"$DEFCOLOR
+	cp $ARMBOOT_PATH/zImage $BOOTFILES_PATH/kernel
+	echo -e $COLOR">> Creating dt.img"$DEFCOLOR
+	$TOOLS_PATH/dtbToolCM -2 -s 2048 -o $BOOTFILES_PATH/dt.img -p $DTCSCRIPTS_PATH/ $ARMBOOT_PATH/ | tail -n 3
+	echo -e $COLOR">> Creating boot.img"$DEFCOLOR
+	$TOOLS_PATH/mkboot $BOOTFILES_PATH $OUTPUT_PATH/boot.img | tail -n 2
+}
+
+function CopyModules() {
+	echo -e $COLOR">> Copying modules"$DEFCOLOR
+	mkdir $TMP_PATH/
+	find . -name "*.ko" -exec cp {} $TMP_PATH/ \; &> /dev/null
+	find $TMP_PATH/ -name "*.ko" -exec mv {} $OUTPUT_PATH/modules/ \; &> /dev/null
+	rmdir $TMP_PATH/
+
+}
+
+
+
+
+#
+# Begin
+#
+export USE_CCACHE=1
+
+export ARCH=arm
+export SUBARCH=arm
+export CROSS_COMPILE=$TOOLCHAIN_PATH/bin/$TOOLCHAIN_PREFIX
+export LD_LIBRARY_PATH=$TOOLCHAIN_PATH/lib:$LD_LIBRARY_PATH
+
+export KBUILD_BUILD_HOST=$HOSTNAME
+export LOCALVERSION="$KERNELVER-$(date +%Y%m%d)"
+
+echo -e $ACTCOLOR"Do you want to start fast building?"$DEFCOLOR
+read -p "(F = fast, D = kernel debug):" ANSWER
+	case $ANSWER in
+		f*|F*)
+		KingdomRowConfig
+		CleanOld
+		MakeKernel
+		MakeBoot
+		CopyModules
+		echo -e $COLOR">> Finished!"$DEFCOLOR
+		;;
+
+		d*|D*)
+		KingdomRowConfig
+		CleanOld
+		MakeKernelDebug
+		echo -e $ACTCOLOR"Do you want to make boot.img?"$DEFCOLOR
+		read -p "(y = yes, n = no):" BTANS
+			case $BTANS in
+				y*|Y*)
+				MakeBoot
+				;;
+			esac
+		echo -e $COLOR">> Finished!"$DEFCOLOR
+		;;
+
+		*)
+		echo -e $COLOR">> Exiting..."$DEFCOLOR
+		;;
+	esac
+
