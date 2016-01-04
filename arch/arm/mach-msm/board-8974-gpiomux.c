@@ -202,7 +202,6 @@ static struct gpiomux_setting gpio_epm_marker_config = {
 	.pull = GPIOMUX_PULL_NONE,
 	.dir = GPIOMUX_OUT_HIGH,
 };
-
 static struct gpiomux_setting wcnss_5wire_suspend_cfg = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv  = GPIOMUX_DRV_2MA,
@@ -272,6 +271,76 @@ static struct gpiomux_setting lcd_en_sus_cfg = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv = GPIOMUX_DRV_2MA,
 	.pull = GPIOMUX_PULL_DOWN,
+};
+
+
+static struct gpiomux_setting lcd_te_active_cfg = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv  = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_NONE,
+	.dir = GPIOMUX_IN,
+};
+
+static struct gpiomux_setting lcd_te_suspend_cfg = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv  = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_NONE,
+	.dir = GPIOMUX_IN,
+};
+
+#if 0
+static struct gpiomux_setting lcd_vsp_suspend_cfg = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv  = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_NONE,
+	.dir = GPIOMUX_OUT_LOW,
+};
+
+static struct gpiomux_setting lcd_vsn_suspend_cfg = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv  = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_NONE,
+	.dir = GPIOMUX_OUT_LOW,
+};
+#endif
+static struct gpiomux_setting lcd_id_active_cfg = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv  = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_NONE,
+	.dir = GPIOMUX_IN,
+};
+static struct gpiomux_setting lcd_id_suspend_cfg = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv  = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_NONE,
+	.dir = GPIOMUX_IN,
+};
+
+static struct gpiomux_setting lcd_hsync_active_cfg = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv  = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_NONE,
+	.dir = GPIOMUX_IN,
+};
+static struct gpiomux_setting lcd_hsync_suspend_cfg = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv  = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_NONE,
+	.dir = GPIOMUX_IN,
+};
+
+static struct gpiomux_setting lcd_outdoor_active_cfg = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv  = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_NONE,
+	.dir = GPIOMUX_OUT_LOW,
+};
+
+static struct gpiomux_setting lcd_outdoor_suspend_cfg = {
+	.func = GPIOMUX_FUNC_GPIO,
+	.drv  = GPIOMUX_DRV_2MA,
+	.pull = GPIOMUX_PULL_NONE,
+	.dir = GPIOMUX_OUT_LOW,
 };
 
 static struct gpiomux_setting atmel_resout_sus_cfg = {
@@ -447,6 +516,7 @@ static struct gpiomux_setting hdmi_active_2_cfg = {
 };
 
 static struct msm_gpiomux_config msm_mhl_configs[] __initdata = {
+#if 0
 	{
 		/* mhl-sii8334 pwr */
 		.gpio = 12,
@@ -455,6 +525,7 @@ static struct msm_gpiomux_config msm_mhl_configs[] __initdata = {
 			[GPIOMUX_ACTIVE]    = &mhl_active_1_cfg,
 		},
 	},
+#endif
 	{
 		/* mhl-sii8334 intr */
 		.gpio = 82,
@@ -586,6 +657,52 @@ static struct msm_gpiomux_config msm_epm_configs[] __initdata = {
 	},
 };
 
+static struct msm_gpiomux_config msm_r63319_configs[] __initdata = {
+	{
+		.gpio = 12,
+		.settings = {
+			[GPIOMUX_ACTIVE]    = &lcd_te_active_cfg,
+			[GPIOMUX_SUSPENDED] = &lcd_te_suspend_cfg,
+		},
+	},
+	{
+		.gpio = 13,
+		.settings = {
+			[GPIOMUX_ACTIVE]    = &lcd_hsync_active_cfg,
+			[GPIOMUX_SUSPENDED] = &lcd_hsync_suspend_cfg,
+		},
+	},
+#if 0
+	{
+		.gpio = 14,
+		.settings = {
+			[GPIOMUX_SUSPENDED] = &lcd_vsn_suspend_cfg,
+		},
+	},
+	{
+		.gpio = 16,
+		.settings = {
+			[GPIOMUX_SUSPENDED] = &lcd_vsp_suspend_cfg,
+		},
+	},
+#endif
+	{
+		.gpio = 64,
+		.settings = {
+			[GPIOMUX_ACTIVE]    = &lcd_outdoor_active_cfg,
+			[GPIOMUX_SUSPENDED] = &lcd_outdoor_suspend_cfg,
+		},
+	},
+
+	{
+		.gpio = 85,
+		.settings = {
+			[GPIOMUX_ACTIVE]    = &lcd_id_active_cfg,
+			[GPIOMUX_SUSPENDED] = &lcd_id_suspend_cfg,
+		},
+	},
+
+};
 static struct msm_gpiomux_config msm_blsp_configs[] __initdata = {
 #if defined(CONFIG_KS8851) || defined(CONFIG_KS8851_MODULE)
 	{
@@ -1461,8 +1578,10 @@ void __init msm_8974_init_gpiomux(void)
 	msm_gpiomux_install(msm8974_slimbus_config,
 			ARRAY_SIZE(msm8974_slimbus_config));
 
+	msm_gpiomux_install(msm_r63319_configs, ARRAY_SIZE(msm_r63319_configs));
 	msm_gpiomux_install(msm_touch_configs, ARRAY_SIZE(msm_touch_configs));
-		msm_gpiomux_install(hap_lvl_shft_config,
+
+	msm_gpiomux_install(hap_lvl_shft_config,
 				ARRAY_SIZE(hap_lvl_shft_config));
 
 	if (of_board_is_dragonboard() && machine_is_apq8074())
