@@ -159,7 +159,7 @@
 		status = "okay";
 		pm8941_s1: regulator-s1 {
 			regulator-min-microvolt = <1300000>;
-			regulator-max-microvolt = <1300000>;
+			regulator-max-microvolt = <1400000>;
 			qcom,init-voltage = <1300000>;
 			status = "okay";
 		};
@@ -208,7 +208,7 @@
 	rpm-regulator-ldoa3 {
 		status = "okay";
 		pm8941_l3: regulator-l3 {
-			regulator-min-microvolt = <1225000>;
+			regulator-min-microvolt = <1200000>; /* change voltage for camera */
 			regulator-max-microvolt = <1225000>;
 			qcom,init-voltage = <1225000>;
 			status = "okay";
@@ -415,9 +415,9 @@
 	rpm-regulator-ldoa23 {
 		status = "okay";
 		pm8941_l23: regulator-l23 {
-			regulator-min-microvolt = <3000000>;
-			regulator-max-microvolt = <3000000>;
-			qcom,init-voltage = <3000000>;
+			regulator-min-microvolt = <2850000>;
+			regulator-max-microvolt = <2850000>;
+			qcom,init-voltage = <2850000>;
 			status = "okay";
 		};
 	};
@@ -435,6 +435,7 @@
 	rpm-regulator-vsa1 {
 		status = "okay";
 		pm8941_lvs1: regulator-lvs1 {
+			regulator-always-on;
 			status = "okay";
 		};
 	};
@@ -536,7 +537,7 @@
 	spi_eth_vreg: spi_eth_phy_vreg {
 		compatible = "regulator-fixed";
 		regulator-name = "ethernet_phy";
-		gpio = <&pm8941_mpps 5 0>;
+		/* gpio = <&pm8941_mpps 5 0>; */
 		enable-active-high;
 	};
 
