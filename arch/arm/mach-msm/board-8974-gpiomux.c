@@ -202,6 +202,7 @@ static struct gpiomux_setting gpio_epm_marker_config = {
 	.pull = GPIOMUX_PULL_NONE,
 	.dir = GPIOMUX_OUT_HIGH,
 };
+
 static struct gpiomux_setting wcnss_5wire_suspend_cfg = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv  = GPIOMUX_DRV_2MA,
@@ -303,6 +304,7 @@ static struct gpiomux_setting lcd_vsn_suspend_cfg = {
 	.dir = GPIOMUX_OUT_LOW,
 };
 #endif
+
 static struct gpiomux_setting lcd_id_active_cfg = {
 	.func = GPIOMUX_FUNC_GPIO,
 	.drv  = GPIOMUX_DRV_2MA,
@@ -898,6 +900,7 @@ static struct msm_gpiomux_config msm_sensor_configs[] __initdata = {
 			[GPIOMUX_SUSPENDED] = &cam_settings[1],
 		},
 	},
+#if 0
 	{
 		.gpio = 16, /* CAM_MCLK1 */
 		.settings = {
@@ -905,6 +908,7 @@ static struct msm_gpiomux_config msm_sensor_configs[] __initdata = {
 			[GPIOMUX_SUSPENDED] = &cam_settings[1],
 		},
 	},
+#endif
 	{
 		.gpio = 17, /* CAM_MCLK2 */
 		.settings = {
@@ -912,6 +916,7 @@ static struct msm_gpiomux_config msm_sensor_configs[] __initdata = {
 			[GPIOMUX_SUSPENDED] = &cam_settings[1],
 		},
 	},
+#if 0
 	{
 		.gpio = 18, /* WEBCAM1_RESET_N / CAM_MCLK3 */
 		.settings = {
@@ -919,6 +924,7 @@ static struct msm_gpiomux_config msm_sensor_configs[] __initdata = {
 			[GPIOMUX_SUSPENDED] = &cam_settings[4],
 		},
 	},
+#endif
 	{
 		.gpio = 19, /* CCI_I2C_SDA0 */
 		.settings = {
