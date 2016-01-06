@@ -81,6 +81,14 @@ GRTAGS
 GSYMS
 GTAGS
 
+# standalone kernel build files
+arch/arm/crypto/aesbs-core.S
+arch/arm/crypto/sha256-core.S
+arch/arm/mach-msm/smd_rpc_sym.c
+/firmware/*.img
+/boot/
+/out/
+
 *.orig
 *~
 \#*#
